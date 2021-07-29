@@ -126,6 +126,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.flaskenv
 
 # Spyder project settings
 .spyderproject
@@ -145,3 +146,15 @@ dmypy.json
 # Pyre type checker
 .pyre/
 /.env
+
+# dependencies
+/.pnp
+.pnp.js
+
+
+# misc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
