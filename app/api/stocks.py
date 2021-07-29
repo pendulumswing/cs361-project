@@ -39,7 +39,7 @@ class Stock(Resource):
     # Find task
     def get(self, resource_id):
     # symbol = "TWST"
-        symbol = resource_id
+        symbol = resource_id.upper()
         URL = f"https://finance.yahoo.com/quote/{symbol}?p={symbol}"
         page = requests.get(URL)
 
