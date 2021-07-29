@@ -13,12 +13,6 @@ def add_header(response):
     return response
 
 # Add individual route modules here
-# from .users import *
-# from .boards import *
-# from .lists import *
-# from .tasks import *
-# from .board_users import *
-# from .task_users import *
 from .stocks import *
 
 # Import resources to ensure view is registered
