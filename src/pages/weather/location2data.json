@@ -1,0 +1,43 @@
+{
+  "coord": {
+    "lon": -122.6897,
+    "lat": 45.5078
+  },
+  "weather": [
+    {
+      "id": 802,
+      "main": "Clouds",
+      "description": "scattered clouds",
+      "icon": "03d"
+    }
+  ],
+  "base": "stations",
+  "main": {
+    "temp": 23.72,
+    "feels_like": 23.64,
+    "temp_min": 19.98,
+    "temp_max": 27.64,
+    "pressure": 1019,
+    "humidity": 57
+  },
+  "visibility": 10000,
+  "wind": {
+    "speed": 2.06,
+    "deg": 320
+  },
+  "clouds": {
+    "all": 40
+  },
+  "dt": 1627840329,
+  "sys": {
+    "type": 2,
+    "id": 2033837,
+    "country": "US",
+    "sunrise": 1627822502,
+    "sunset": 1627875538
+  },
+  "timezone": -25200,
+  "id": 0,
+  "name": "Portland",
+  "cod": 200
+}
