@@ -29,3 +29,9 @@ export default function Input(props) {
   )
 }
 
+// <style>
+//   input::placeholder {
+//   color: gray;
+// }
+// </style>
+

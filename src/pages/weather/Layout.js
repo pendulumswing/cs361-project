@@ -123,7 +123,7 @@ function Layout(props) {
             Graph
           </div>
           <div className="text-gray-400">
-            <p>How location 2 compares</p>
+            <p>How Location 2 compares</p>
             <p>(a visual "fingerprint")</p>
           </div>
         </div>
@@ -132,7 +132,7 @@ function Layout(props) {
       {/*Categories*/}
       <div className="flex">
         <div className="w-1/6 py-2">
-          <div className="text-sm text-gray-500 text-right space-y-2">
+          <div className="text-gray-500 text-right space-y-2">
             <p>Temperature (ºF)</p>
             <p>Temperature (ºC)</p>
             <p>Humidity (%)</p>
@@ -141,7 +141,7 @@ function Layout(props) {
             <p>Wind Direction</p>
             <p>Wind Gust (m/s)</p>
             <p>Cloudiness (%)</p>
-            <p>Precipitation</p>
+            {/*<p>Precipitation</p>*/}
             <p>Pollen (g/m^3)</p>
           </div>
         </div>
@@ -152,7 +152,7 @@ function Layout(props) {
         </div>
 
         {/*Location 2*/}
-        <div className="w-1/4">
+        <div className="w-1/4 px-4">
           <LocationWeatherData data={data2}/>
         </div>
 
@@ -162,14 +162,24 @@ function Layout(props) {
             <p className="text-blue-300 font-semibold text-xl">TODO</p>
             <p>Graph Stuff Goes here</p>
           </div>
-          <p className="text-blue-300 font-semibold text-xl">Proof of Concept Stuff</p>
-          <p className="">
-            <span>Current stock price for NFLX is: </span>
-            <span className="font-semibold">${currentPrice}</span>
-          </p>
-          <p>
-            OpenWeatherKey (shortened): {process.env.REACT_APP_OPENWEATHER_KEY.slice(20)}
-          </p>
+
+          <div className="pb-4">
+            <p className="text-blue-300 font-semibold text-xl">Microservice</p>
+            <p>Provide the current stock price for a given symbol.</p>
+            <p className="">
+              <span className="font-semibold">Example: </span>
+              <span className=""> NFLX is </span>
+              <span className="font-semibold">${currentPrice}</span>
+            </p>
+          </div>
+
+          <div>
+            <p className="text-blue-300 font-semibold text-xl">Environment Variable</p>
+            <p>
+              OpenWeatherKey (partial):
+              <span className="font-semibold">{process.env.REACT_APP_OPENWEATHER_KEY.slice(-10)}</span>
+            </p>
+          </div>
         </div>
 
       </div>
