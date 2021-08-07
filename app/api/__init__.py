@@ -14,6 +14,7 @@ def add_header(response):
 
 # Add individual route modules here
 from .stocks import *
+from .weather import *
 
 # Import resources to ensure view is registered
 # from .resources import * # NOQA
