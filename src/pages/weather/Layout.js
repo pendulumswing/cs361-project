@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import LocationWeatherData from './LocationWeatherData';
-import axios from 'axios';
 import data1 from './location1data.json';
 import data2 from './location2data.json';
 import Input from './Input';
 
 function Layout(props) {
-  // const { children } = props
   const [currentPrice, setCurrentPrice] = useState(0);
-  const [weather, setWeather] = useState(undefined);
-  const testUrl = `api.openweathermap.org/data/2.5/weather?zip=85750&appid=${process.env.REACT_APP_OPENWEATHER_KEY}&units=metric`
+  const [location1, setLocation1] = useState(undefined);
+  const [location2, setLocation2] = useState(undefined);
+  // const testUrl = `api.openweathermap.org/data/2.5/weather?zip=85750&appid=${process.env.REACT_APP_OPENWEATHER_KEY}&units=metric`
   console.log('data1: ', data1)
 
   useEffect(() => {
@@ -17,17 +16,6 @@ function Layout(props) {
       setCurrentPrice(data)
     })
   }, [])
-
-  // // TODO - setup call through server
-  // useEffect(() => {
-  //   axios.get(testUrl)
-  //     .then(res => {
-  //       console.log(res)
-  //       setWeather(res)
-  //     }).catch(error => (
-  //       console.log(error)
-  //   ))
-  // }, [])
 
   const data = {
     "coord": {
@@ -98,23 +86,31 @@ function Layout(props) {
         {/*Location 1 Header*/}
         <div className="w-1/4 text-left px-4">
           <div className="text-2xl font-semibold text-gray-500">
-            {data1.name || 'Location 1'}
+            {location1 && location1.name || 'Location 1'}
           </div>
           <div className="text-gray-400">
             (e.g. where are you at?)
           </div>
-          <Input />
+          <Input
+            name="location1"
+            setLocation={setLocation1}
+            placeholder={'city or zip code'}
+          />
         </div>
 
         {/*Location 2 Header*/}
         <div className="w-1/4 text-left px-4">
           <div className="text-2xl font-semibold text-gray-500">
-            {data2.name || 'Location 2'}
+            {location2 && location2.name || 'Location 2'}
           </div>
           <div className="text-gray-400">
             (e.g. where are you going?)
           </div>
-          <Input />
+          <Input
+            name="location2"
+            setLocation={setLocation2}
+            placeholder={'city or zip code'}
+          />
         </div>
 
         {/*Graph Header*/}
@@ -148,12 +144,12 @@ function Layout(props) {
 
         {/*Location 1*/}
         <div className="w-1/4 px-4">
-          <LocationWeatherData data={data1}/>
+          <LocationWeatherData data={location1}/>
         </div>
 
         {/*Location 2*/}
         <div className="w-1/4 px-4">
-          <LocationWeatherData data={data2}/>
+          <LocationWeatherData data={location2}/>
         </div>
 
         {/*Graph*/}

@@ -11,7 +11,10 @@ function LocationWeatherData(props) {
   //   })
   // }, [])
 
-  if (_.isEmpty(data)) {
+  if (data === undefined ||
+      data.main === undefined ||
+      data.wind === undefined ||
+      _.isEmpty(data)) {
     return (
       <div>
         ...
@@ -25,8 +28,8 @@ function LocationWeatherData(props) {
     <div className="flex">
       <div className="w-full py-2">
         <div className="text-gray-500 text-left space-y-2 h-full whitespace-pre-wrap">
-          <p>{data.main.temp ? `${((data.main.temp -273.15) * 1.8 + 32).toFixed(2)}º` : ''}</p>
-          <p>{data.main.temp ? `${((data.main.temp -273.15)).toFixed(2)}º` : ' '}</p>
+          <p>{data.main.temp ? `${((data.main.temp) * 1.8 + 32).toFixed(0)}º` : ''}</p>
+          <p>{data.main.temp ? `${((data.main.temp)).toFixed(0)}º` : ' '}</p>
           <p>{data.main.humidity ? `${data.main.humidity.toFixed(0)}%` : ' '}</p>
           <p>{data.main.pressure ? `${data.main.pressure.toFixed(0)}hPa` : ' '}</p>
           <p>{data.wind.speed ? `${data.wind.speed.toFixed(2)}m/s` : ' '}</p>
