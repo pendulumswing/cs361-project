@@ -115,28 +115,28 @@ function Layout(props) {
 
         {/*Graph*/}
         <div className="w-1/4 text-gray-400 text-left px-4">
-          <div className="pb-4">
-            <p className="text-blue-300 font-semibold text-xl">TODO</p>
-            <p>Graph Stuff Goes here</p>
-          </div>
+          {/*<div className="pb-4">*/}
+          {/*  <p className="text-blue-300 font-semibold text-xl">TODO</p>*/}
+          {/*  <p>Graph Stuff Goes here</p>*/}
+          {/*</div>*/}
 
-          <div className="pb-4">
-            <p className="text-blue-300 font-semibold text-xl">Microservice</p>
-            <p>Provide the current stock price for a given symbol.</p>
-            <p className="">
-              <span className="font-semibold">Example: </span>
-              <span className=""> NFLX is </span>
-              <span className="font-semibold">${currentPrice}</span>
-            </p>
-          </div>
+          {/*<div className="pb-4">*/}
+          {/*  <p className="text-blue-300 font-semibold text-xl">Microservice</p>*/}
+          {/*  <p>Provide the current stock price for a given symbol.</p>*/}
+          {/*  <p className="">*/}
+          {/*    <span className="font-semibold">Example: </span>*/}
+          {/*    <span className=""> NFLX is </span>*/}
+          {/*    <span className="font-semibold">${currentPrice}</span>*/}
+          {/*  </p>*/}
+          {/*</div>*/}
 
-          <div>
-            <p className="text-blue-300 font-semibold text-xl">Environment Variable</p>
-            <p>
-              OpenWeatherKey (partial):
-              <span className="font-semibold">{process.env.REACT_APP_OPENWEATHER_KEY.slice(-10)}</span>
-            </p>
-          </div>
+          {/*<div>*/}
+          {/*  <p className="text-blue-300 font-semibold text-xl">Environment Variable</p>*/}
+          {/*  <p>*/}
+          {/*    OpenWeatherKey (partial):*/}
+          {/*    <span className="font-semibold">{process.env.REACT_APP_OPENWEATHER_KEY.slice(-10)}</span>*/}
+          {/*  </p>*/}
+          {/*</div>*/}
         </div>
 
       </div>

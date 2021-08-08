@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import validator from "validator/es";
 import _ from 'lodash';
-import { getByStateCity, getByCityState, getByZip, zipLookAhead, cityLookAhead, stateLookAhead } from 'zcs';
+import { getByCityState, getByZip } from 'zcs';
 
 
 export default function Input(props) {
@@ -14,22 +14,24 @@ export default function Input(props) {
     setValue(event.target.value);
   };
 
-  function validate(value) {
-    if (validator.isNumeric(value) && value.length === 5) {
+  function isValidCityOrZip(value) {
+    if (isZip(value) || isCity(value)) {
       setError('')
       return true
-    }
-    if (validator.isAlpha(value, 'en-US', {ignore: ' '})) {
-      setError('')
-      return true
-    }
-    if (validator.isNumeric(value)) {
-      setError('Please enter a valid U.S. zip code.')
-      return false
     }
     setError('Please enter a valid U.S. city or zip code.')
     return false
   }
+
+  function isZip(value) {
+    return validator.isNumeric(value) &&
+      (value.length === 5 || value.length === 9)
+  }
+
+  function isCity(value) {
+    return validator.isAlpha(value, 'en-US', {ignore: ' '})
+  }
+
 
   function makeCityObject (response, value) {
     // Use response object to obtain city, state and zip code info
@@ -53,8 +55,8 @@ export default function Input(props) {
 
   function handleSubmit (event) {
     event.preventDefault();
-    const hasZip = validator.isNumeric(value)
-    if (value && validate(value)) {
+    if (value && isValidCityOrZip(value)) {
+      const hasZip = validator.isNumeric(value)
       axios.post('/api/weather', {
         value: value,
         zip: hasZip,

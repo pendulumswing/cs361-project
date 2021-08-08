@@ -24,7 +24,7 @@ function LocationWeatherData(props) {
       _.isEmpty(data)) {
     return (
       <div>
-        ...
+
       </div>
     )
   }
@@ -47,7 +47,7 @@ function LocationWeatherData(props) {
               pollen && (
                 <p>{pollen} g/m<sup>3</sup></p>
               ) || (
-                <p>' '</p>
+                <p> </p>
               )
             }
           </div>
