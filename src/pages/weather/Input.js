@@ -19,7 +19,7 @@ export default function Input(props) {
       setError('')
       return true
     }
-    if (validator.isAlpha(value, 'en-US', {ignore: ' ,'})) {
+    if (validator.isAlpha(value, 'en-US', {ignore: ' '})) {
       setError('')
       return true
     }
@@ -33,9 +33,18 @@ export default function Input(props) {
 
   function makeCityObject (response, value) {
     // Use response object to obtain city, state and zip code info
-    const cityData = getByCityState(response.data.name)
-    const state = Object.keys(cityData)[0];
-    const zip = value ? value : cityData[state][0]
+    let zip, state = undefined;
+    if (value) {
+      const zipData = getByZip(value)
+      console.log('zipData: ', zipData)
+      state = zipData.state
+      zip = value
+    } else {
+      const cityData = getByCityState(response.data.name)
+      console.log('cityData: ', cityData)
+      state = Object.keys(cityData)[0];
+      zip = cityData[state][0]
+    }
     return {
       state: state,
       zip: zip
