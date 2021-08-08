@@ -1,24 +1,64 @@
 import React from 'react';
 import axios from 'axios';
+import validator from "validator/es";
+import _ from 'lodash';
+import { getByStateCity, getByCityState, getByZip, zipLookAhead, cityLookAhead, stateLookAhead } from 'zcs';
 
 
 export default function Input(props) {
+  // console.log('getByCityState: ', getByCityState('Orlando'))
+  // console.log('getByZip: ', getByZip('03809'))
+  // console.log('zipLookAhead: ', zipLookAhead('038'), 10)
 
   const { name, className, disabled, placeholder, setLocation } = props;
   const [value, setValue] = React.useState('');
+  const [error, setError] = React.useState('');
 
   const handleChange = event => {
     setValue(event.target.value);
   };
 
+  function validate(value) {
+    if (validator.isNumeric(value) && value.length === 5) {
+      setError('')
+      return true
+    }
+    if (validator.isAlpha(value, 'en-US', {ignore: ' ,'})) {
+      setError('')
+      return true
+    }
+    if (validator.isNumeric(value)) {
+      setError('Please enter a valid U.S. zip code.')
+      return false
+    }
+    setError('Please enter a valid U.S. city or zip code.')
+    return false
+  }
+
   const handleSubmit = event => {
-    if (value) {
-      event.preventDefault();
+    event.preventDefault();
+    const hasZip = validator.isNumeric(value)
+    if (value && validate(value)) {
       axios.post('/api/weather', {
-        value: value
+        value: value,
+        zip: hasZip,
       }).then(function (response) {
-        console.log(response.data)
-        setLocation(response.data)
+        console.log('response.data: ', response.data)
+        if (response.data.cod === 200) {
+          // Combine response object with state and zip code
+          const cityData = getByCityState(response.data.name)
+          const state = Object.keys(cityData)[0];
+          const zip = hasZip ? value : cityData[state][0]
+          const locationData = {
+            state: state,
+            zip: zip
+          }
+          const data = _.merge(response.data, locationData)
+          console.log('data: ', data)
+          setLocation(data)
+        } else {
+          setError(response.data.message)
+        }
       })
     }
   };
@@ -40,6 +80,13 @@ export default function Input(props) {
             onChange={handleChange}
           />
         </form>
+      </div>
+      <div>
+        {
+          error.length > 0 && (
+            <p className="mt-2 text-sm text-red-600" id="input-error">{error}</p>
+          )
+        }
       </div>
       {/*<p className="mt-2 text-sm text-red-600" id="email-error">Your password must be less than 4 characters.</p>*/}
     </div>

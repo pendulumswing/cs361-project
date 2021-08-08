@@ -9,7 +9,6 @@ function Layout(props) {
   const [location1, setLocation1] = useState(undefined);
   const [location2, setLocation2] = useState(undefined);
   // const testUrl = `api.openweathermap.org/data/2.5/weather?zip=85750&appid=${process.env.REACT_APP_OPENWEATHER_KEY}&units=metric`
-  console.log('data1: ', data1)
 
   useEffect(() => {
     fetch('/api/stocks/NFLX').then(res => res.json()).then(data => {
@@ -86,7 +85,11 @@ function Layout(props) {
         {/*Location 1 Header*/}
         <div className="w-1/4 text-left px-4">
           <div className="text-2xl font-semibold text-gray-500">
-            {location1 && location1.name || 'Location 1'}
+            {
+              location1 && location1.name && (
+                <div>{location1.name}, {location1.state}</div>
+              ) || 'Location 1'
+            }
           </div>
           <div className="text-gray-400">
             (e.g. where are you at?)
@@ -101,7 +104,11 @@ function Layout(props) {
         {/*Location 2 Header*/}
         <div className="w-1/4 text-left px-4">
           <div className="text-2xl font-semibold text-gray-500">
-            {location2 && location2.name || 'Location 2'}
+            {
+              location2 && location2.name && (
+                <div>{location2.name}, {location2.state}</div>
+              ) || 'Location 2'
+            }
           </div>
           <div className="text-gray-400">
             (e.g. where are you going?)
