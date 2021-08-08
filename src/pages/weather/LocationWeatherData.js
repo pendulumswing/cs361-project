@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
+import validator from "validator/es";
+import axios from "axios";
 
 function LocationWeatherData(props) {
   const { children, data, weather } = props
-  // const [currentPrice, setCurrentPrice] = useState(0);
+  const [pollen, setPollen] = useState('');
 
-  // useEffect(() => {
-  //   fetch('/api/stocks/NFLX').then(res => res.json()).then(data => {
-  //     setCurrentPrice(data)
-  //   })
-  // }, [])
+  useEffect(() => {
+    if (data !== undefined) {
+      console.log('zip code pollen: ', data.zip)
+      axios.post(`/api/pollen?zip=${data.zip}`)
+        .then(function (response) {
+          console.log('response: ', response)
+          setPollen(response.data)
+        })
+    }
+  }, [data])
 
   if (data === undefined ||
       data.main === undefined ||
@@ -22,7 +29,6 @@ function LocationWeatherData(props) {
     )
   }
 
-  // debugger
 
   return (
     <div className="flex">
@@ -36,11 +42,15 @@ function LocationWeatherData(props) {
           <p>{data.wind.deg ? `${data.wind.deg.toFixed(0)}º` : ' '}</p>
           <p className="">{data.wind.gust ? `${data.wind.gust.toFixed(2)}m/s` : ' '}</p>
           <p>{data.main.humidity ? `${data.main.humidity.toFixed(0)}%` : ' '}</p>
-          {/*<p>Precipitation</p>*/}
-          <p>
-            <span className="text-blue-400 font-semibold text-lg">{'Microservice '}</span>
-            (consumed)
-          </p>
+          <div>
+            {
+              pollen && (
+                <p>{pollen} g/m<sup>3</sup></p>
+              ) || (
+                <p>' '</p>
+              )
+            }
+          </div>
         </div>
       </div>
     </div>

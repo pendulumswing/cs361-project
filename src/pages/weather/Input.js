@@ -6,10 +6,6 @@ import { getByStateCity, getByCityState, getByZip, zipLookAhead, cityLookAhead, 
 
 
 export default function Input(props) {
-  // console.log('getByCityState: ', getByCityState('Orlando'))
-  // console.log('getByZip: ', getByZip('03809'))
-  // console.log('zipLookAhead: ', zipLookAhead('038'), 10)
-
   const { name, className, disabled, placeholder, setLocation } = props;
   const [value, setValue] = React.useState('');
   const [error, setError] = React.useState('');
@@ -35,27 +31,29 @@ export default function Input(props) {
     return false
   }
 
-  const handleSubmit = event => {
+  function makeCityObject (response, value) {
+    // Use response object to obtain city, state and zip code info
+    const cityData = getByCityState(response.data.name)
+    const state = Object.keys(cityData)[0];
+    const zip = value ? value : cityData[state][0]
+    return {
+      state: state,
+      zip: zip
+    }
+  }
+
+  function handleSubmit (event) {
     event.preventDefault();
     const hasZip = validator.isNumeric(value)
     if (value && validate(value)) {
       axios.post('/api/weather', {
         value: value,
         zip: hasZip,
-      }).then(function (response) {
-        console.log('response.data: ', response.data)
+      })
+        .then(function (response) {
         if (response.data.cod === 200) {
-          // Combine response object with state and zip code
-          const cityData = getByCityState(response.data.name)
-          const state = Object.keys(cityData)[0];
-          const zip = hasZip ? value : cityData[state][0]
-          const locationData = {
-            state: state,
-            zip: zip
-          }
-          const data = _.merge(response.data, locationData)
-          console.log('data: ', data)
-          setLocation(data)
+          const locationData = makeCityObject(response, hasZip ? value : undefined)
+          setLocation(_.merge(response.data, locationData))
         } else {
           setError(response.data.message)
         }
@@ -65,7 +63,6 @@ export default function Input(props) {
 
   return (
     <div>
-      {/*<label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>*/}
       <div className="mt-1 relative rounded-md shadow-sm">
         <form onSubmit={handleSubmit}>
           <input type="text"
@@ -88,14 +85,7 @@ export default function Input(props) {
           )
         }
       </div>
-      {/*<p className="mt-2 text-sm text-red-600" id="email-error">Your password must be less than 4 characters.</p>*/}
     </div>
   )
 }
-
-// <style>
-//   input::placeholder {
-//   color: gray;
-// }
-// </style>
 

@@ -16,51 +16,6 @@ function Layout(props) {
     })
   }, [])
 
-  const data = {
-    "coord": {
-      "lon": -110.8404,
-      "lat": 32.2974
-    },
-    "weather": [
-      {
-        "id": 801,
-        "main": "Clouds",
-        "description": "few clouds",
-        "icon": "02d"
-      }
-    ],
-    "base": "stations",
-    "main": {
-      "temp": 306.73,
-      "feels_like": 307.64,
-      "temp_min": 302.52,
-      "temp_max": 308.05,
-      "pressure": 1014,
-      "humidity": 39
-    },
-    "visibility": 10000,
-    "wind": {
-      "speed": 2.24,
-      "deg": 270,
-      "gust": 4.47
-    },
-    "clouds": {
-      "all": 20
-    },
-    "dt": 1627774679,
-    "sys": {
-      "type": 2,
-      "id": 2008373,
-      "country": "US",
-      "sunrise": 1627735057,
-      "sunset": 1627784501
-    },
-    "timezone": -25200,
-    "id": 0,
-    "name": "Tucson",
-    "cod": 200
-  }
-
   return (
     <div className="p-4 px-6">
 
@@ -144,8 +99,7 @@ function Layout(props) {
             <p>Wind Direction</p>
             <p>Wind Gust (m/s)</p>
             <p>Cloudiness (%)</p>
-            {/*<p>Precipitation</p>*/}
-            <p>Pollen (g/m^3)</p>
+            <p>Pollen (g/m<sup>3</sup>)</p>
           </div>
         </div>
 
