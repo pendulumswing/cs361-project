@@ -3,6 +3,10 @@ import LocationWeatherData from './LocationWeatherData';
 import data1 from './location1data.json';
 import data2 from './location2data.json';
 import Input from './Input';
+import Graph from './Graph';
+import Pollen from './Pollen';
+import axios from "axios";
+import _ from "lodash";
 
 function Layout(props) {
   const [currentPrice, setCurrentPrice] = useState(0);
@@ -15,6 +19,36 @@ function Layout(props) {
       setCurrentPrice(data)
     })
   }, [])
+
+  useEffect(() => {
+    if(location1 !== undefined) {
+      printData(location1)
+    }
+  }, [location1])
+
+  // useEffect(() => {
+  //   if (location !== undefined) {
+  //     console.log('zip code pollen: ', location.zip)
+  //     axios.post(`/api/pollen?zip=${location.zip}`)
+  //       .then(function (response) {
+  //         console.log('response: ', response)
+  //         setPollen(response.data)
+  //         const locationCopy = _.cloneDeep(location)
+  //         const loc = _.merge(locationCopy, { pollen: response.data })
+  //         setLocation(loc)
+  //       })
+  //   }
+  // }, [location && location.name])
+
+  function printData(data) {
+    const { name, main, weather, wind, state, zip, pollen } = data;
+    console.log(`Weather data for ${name}:`)
+    console.log(`  main: `, main);
+    console.log(`  weather: `, weather);
+    console.log(`  wind: `, wind);
+    console.log(`  state, zip: ${state}, ${zip}`);
+    console.log(`  pollen: `, pollen);
+  }
 
   return (
     <div className="p-4 px-6">
@@ -105,20 +139,36 @@ function Layout(props) {
 
         {/*Location 1*/}
         <div className="w-1/4 px-4">
-          <LocationWeatherData data={location1}/>
+          <LocationWeatherData
+            key={location1}
+            location={location1}
+            setLocation={setLocation1}
+          />
         </div>
 
         {/*Location 2*/}
         <div className="w-1/4 px-4">
-          <LocationWeatherData data={location2}/>
+          <LocationWeatherData
+            key={location2}
+            location={location2}
+            setLocation={setLocation2}
+          />
         </div>
 
         {/*Graph*/}
         <div className="w-1/4 text-gray-400 text-left px-4">
-          {/*<div className="pb-4">*/}
-          {/*  <p className="text-blue-300 font-semibold text-xl">TODO</p>*/}
-          {/*  <p>Graph Stuff Goes here</p>*/}
-          {/*</div>*/}
+          <div className="h-full">
+            {
+              location2 && location1 && (
+                <Graph
+                  key={location1 && location2}
+                  className="h-full"
+                  location1={location1}
+                  location2={location2}
+                />
+              ) || ''
+            }
+          </div>
 
           {/*<div className="pb-4">*/}
           {/*  <p className="text-blue-300 font-semibold text-xl">Microservice</p>*/}
@@ -145,3 +195,7 @@ function Layout(props) {
 }
 
 export default Layout;
+
+function logData() {
+
+};
