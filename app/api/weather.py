@@ -1,4 +1,3 @@
-# from .resources import *
 import os
 from flask import request
 from flask_restx import Resource
@@ -18,6 +17,7 @@ class Weather(Resource):
         if req['zip']:
             query_type = 'zip'
         print(f'value: {value}')
-        url = f"http://api.openweathermap.org/data/2.5/weather?{query_type}={value}&appid={OPENWEATHER_KEY}&units=metric"
+        url = f"http://api.openweathermap.org/data/2.5/weather?"\
+              f"{query_type}={value}&appid={OPENWEATHER_KEY}&units=metric"
         response = requests.get(url)
         return response.json()

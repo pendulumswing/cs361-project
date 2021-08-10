@@ -1,4 +1,3 @@
-# from .resources import *
 import os
 from datetime import datetime
 from flask import request

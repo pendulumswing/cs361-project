@@ -1,4 +1,3 @@
-# from .resources import *
 import os
 from flask import request
 from flask_restx import Resource
@@ -14,4 +13,7 @@ class Weather(Resource):
         print(f'zip server: {zip}')
         url = f"https://cs361-microservice.herokuapp.com/api?zip={zip}"
         response = requests.get(url)
-        return response.json()
+        try:
+            return response.json()  # Sometimes response is empty
+        except:
+            return 0
