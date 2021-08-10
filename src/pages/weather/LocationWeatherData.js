@@ -1,27 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
-import validator from "validator/es";
-import axios from "axios";
+import Pollen from './Pollen';
 
 function LocationWeatherData(props) {
-  const { children, data, weather } = props
-  const [pollen, setPollen] = useState('');
+  const { location, setLocation } = props
 
-  useEffect(() => {
-    if (data !== undefined) {
-      console.log('zip code pollen: ', data.zip)
-      axios.post(`/api/pollen?zip=${data.zip}`)
-        .then(function (response) {
-          console.log('response: ', response)
-          setPollen(response.data)
-        })
-    }
-  }, [data])
-
-  if (data === undefined ||
-      data.main === undefined ||
-      data.wind === undefined ||
-      _.isEmpty(data)) {
+  if (location === undefined ||
+      location.main === undefined ||
+      location.wind === undefined ||
+      _.isEmpty(location)) {
     return (
       <div>
 
@@ -29,28 +16,19 @@ function LocationWeatherData(props) {
     )
   }
 
-
   return (
     <div className="flex">
       <div className="w-full py-2">
         <div className="text-gray-500 text-left space-y-2 h-full whitespace-pre-wrap">
-          <p>{data.main.temp ? `${((data.main.temp) * 1.8 + 32).toFixed(0)}º` : ''}</p>
-          <p>{data.main.temp ? `${((data.main.temp)).toFixed(0)}º` : ' '}</p>
-          <p>{data.main.humidity ? `${data.main.humidity.toFixed(0)}%` : ' '}</p>
-          <p>{data.main.pressure ? `${data.main.pressure.toFixed(0)}hPa` : ' '}</p>
-          <p>{data.wind.speed ? `${data.wind.speed.toFixed(2)}m/s` : ' '}</p>
-          <p>{data.wind.deg ? `${data.wind.deg.toFixed(0)}º` : ' '}</p>
-          <p className="">{data.wind.gust ? `${data.wind.gust.toFixed(2)}m/s` : ' '}</p>
-          <p>{data.main.humidity ? `${data.main.humidity.toFixed(0)}%` : ' '}</p>
-          <div>
-            {
-              pollen && (
-                <p>{pollen} g/m<sup>3</sup></p>
-              ) || (
-                <p> </p>
-              )
-            }
-          </div>
+          <p>{location.main.temp ? `${((location.main.temp) * 1.8 + 32).toFixed(0)}º` : ''}</p>
+          <p>{location.main.temp ? `${((location.main.temp)).toFixed(0)}º` : ' '}</p>
+          <p>{location.main.humidity ? `${location.main.humidity.toFixed(0)}%` : ' '}</p>
+          <p>{location.main.pressure ? `${location.main.pressure.toFixed(0)}hPa` : ' '}</p>
+          <p>{location.wind.speed ? `${location.wind.speed.toFixed(2)}m/s` : ' '}</p>
+          <p>{location.wind.deg ? `${location.wind.deg.toFixed(0)}º` : ' '}</p>
+          <p className="">{location.wind.gust ? `${location.wind.gust.toFixed(2)}m/s` : ' '}</p>
+          <p>{location.clouds.all ? `${location.clouds.all.toFixed(0)}%` : ' '}</p>
+          <Pollen key={location} location={location} setLocation={setLocation}/>
         </div>
       </div>
     </div>
