@@ -32,18 +32,15 @@ export default function Input(props) {
     return validator.isAlpha(value, 'en-US', {ignore: ' '})
   }
 
-
   function makeCityObject (response, value) {
     // Use response object to obtain city, state and zip code info
     let zip, state = undefined;
     if (value) {
       const zipData = getByZip(value)
-      console.log('zipData: ', zipData)
       state = zipData.state
       zip = value
     } else {
       const cityData = getByCityState(response.data.name)
-      console.log('cityData: ', cityData)
       state = Object.keys(cityData)[0];
       zip = cityData[state][0]
     }
@@ -56,6 +53,7 @@ export default function Input(props) {
   function handleSubmit (event) {
     event.preventDefault();
     if (value && isValidCityOrZip(value)) {
+      setLocation(undefined)
       const hasZip = validator.isNumeric(value)
       axios.post('/api/weather', {
         value: value,
@@ -64,7 +62,7 @@ export default function Input(props) {
         .then(function (response) {
         if (response.data.cod === 200) {
           const locationData = makeCityObject(response, hasZip ? value : undefined)
-          setLocation(_.merge(response.data, locationData))
+          setLocation(_.merge(response.data, locationData, { pollen: undefined }))  // add 'pollen' prop placeholder
         } else {
           setError(response.data.message)
         }
