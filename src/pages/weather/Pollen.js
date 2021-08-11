@@ -5,11 +5,9 @@ export default function Pollen(props) {
   const { location, setLocation } = props;
 
   useEffect(() => {
-    if (location !== undefined) {
-      console.log('zip code pollen: ', location.zip)
+    if (location.name !== undefined) {
       axios.post(`/api/pollen?zip=${location.zip}`)
         .then(function (response) {
-          console.log('response: ', response)
           setLocation({ ...location, ['pollen'] : response.data })  // Sets single prop on object
         })
     }
@@ -17,9 +15,7 @@ export default function Pollen(props) {
 
   if (!location) {
     return (
-      <div>
-        nothing
-      </div>
+      <p> </p>
     )
   }
 
