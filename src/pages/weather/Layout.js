@@ -83,12 +83,21 @@ function Layout(props) {
           <div className="text-gray-400">
             (e.g. where are you at?)
           </div>
-          <Input
-            name="location1"
-            setLocation={setLocation1}
-            placeholder={'city or zip code'}
-            autofocus={true}
-          />
+          <div className="flex flex-nowrap">
+            <Input
+              name="location1"
+              setLocation={setLocation1}
+              placeholder={'city or zip code'}
+              autofocus={true}
+            />
+            <div className="items-center justify-center mt-2 relative rounded-md shadow-sm">
+              <button
+                className=" ml-3 bg-gray-100 rounded-md p-1 px-3 h-full text-gray-400 border border-gray-300"
+                onClick={()=>(setLocation1(undefined))}>
+                Clear
+              </button>
+            </div>
+          </div>
         </div>
 
         {/*Location 2 Header*/}
@@ -103,11 +112,20 @@ function Layout(props) {
           <div className="text-gray-400">
             (e.g. where are you going?)
           </div>
-          <Input
-            name="location2"
-            setLocation={setLocation2}
-            placeholder={'city or zip code'}
-          />
+          <div className="flex flex-nowrap">
+            <Input
+              name="location2"
+              setLocation={setLocation2}
+              placeholder={'city or zip code'}
+            />
+            <div className="items-center justify-center mt-2 relative rounded-md shadow-sm">
+              <button
+                className=" ml-3 bg-gray-100 rounded-md p-1 px-3 h-full text-gray-400 border border-gray-300"
+                onClick={()=>(setLocation2(undefined))}>
+                Clear
+              </button>
+            </div>
+          </div>
         </div>
 
         {/*Graph Header*/}
