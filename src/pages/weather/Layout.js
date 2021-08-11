@@ -1,44 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import LocationWeatherData from './LocationWeatherData';
-import data1 from './location1data.json';
-import data2 from './location2data.json';
 import Input from './Input';
 import Graph from './Graph';
+import Button from './Button';
 import Pollen from './Pollen';
 import axios from "axios";
 import _ from "lodash";
 
 function Layout(props) {
-  const [currentPrice, setCurrentPrice] = useState(0);
   const [location1, setLocation1] = useState(undefined);
   const [location2, setLocation2] = useState(undefined);
-  // const testUrl = `api.openweathermap.org/data/2.5/weather?zip=85750&appid=${process.env.REACT_APP_OPENWEATHER_KEY}&units=metric`
-
-  useEffect(() => {
-    fetch('/api/stocks/NFLX').then(res => res.json()).then(data => {
-      setCurrentPrice(data)
-    })
-  }, [])
 
   useEffect(() => {
     if(location1 !== undefined) {
       printData(location1)
     }
   }, [location1])
-
-  // useEffect(() => {
-  //   if (location !== undefined) {
-  //     console.log('zip code pollen: ', location.zip)
-  //     axios.post(`/api/pollen?zip=${location.zip}`)
-  //       .then(function (response) {
-  //         console.log('response: ', response)
-  //         setPollen(response.data)
-  //         const locationCopy = _.cloneDeep(location)
-  //         const loc = _.merge(locationCopy, { pollen: response.data })
-  //         setLocation(loc)
-  //       })
-  //   }
-  // }, [location && location.name])
 
   function printData(data) {
     const { name, main, weather, wind, state, zip, pollen } = data;
@@ -52,7 +29,6 @@ function Layout(props) {
 
   return (
     <div className="p-4 px-6">
-
       <div className="py-4">
         {/*Title*/}
         <p className="text-4xl text-blue-60 text-left">Weather Comparison</p>
@@ -90,13 +66,7 @@ function Layout(props) {
               placeholder={'city or zip code'}
               autofocus={true}
             />
-            <div className="items-center justify-center mt-2 relative rounded-md shadow-sm">
-              <button
-                className=" ml-3 bg-gray-100 rounded-md p-1 px-3 h-full text-gray-400 border border-gray-300"
-                onClick={()=>(setLocation1(undefined))}>
-                Clear
-              </button>
-            </div>
+            <Button setLocation={setLocation1}/>
           </div>
         </div>
 
@@ -114,17 +84,12 @@ function Layout(props) {
           </div>
           <div className="flex flex-nowrap">
             <Input
+              key={location2}
               name="location2"
               setLocation={setLocation2}
               placeholder={'city or zip code'}
             />
-            <div className="items-center justify-center mt-2 relative rounded-md shadow-sm">
-              <button
-                className=" ml-3 bg-gray-100 rounded-md p-1 px-3 h-full text-gray-400 border border-gray-300"
-                onClick={()=>(setLocation2(undefined))}>
-                Clear
-              </button>
-            </div>
+            <Button setLocation={setLocation2}/>
           </div>
         </div>
 
