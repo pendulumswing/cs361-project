@@ -87,6 +87,7 @@ function Layout(props) {
             name="location1"
             setLocation={setLocation1}
             placeholder={'city or zip code'}
+            autofocus={true}
           />
         </div>
 

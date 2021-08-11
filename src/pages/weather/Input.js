@@ -9,6 +9,7 @@ export default function Input(props) {
   const { name, className, disabled, placeholder, setLocation } = props;
   const [value, setValue] = React.useState('');
   const [error, setError] = React.useState('');
+  const autofocus = props.autofocus ? props.autofocus : false;
 
   const handleChange = event => {
     setValue(event.target.value);
@@ -79,6 +80,7 @@ export default function Input(props) {
             id={name}
             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
             placeholder={placeholder}
+            autoFocus={autofocus}
             aria-invalid="true"
             aria-describedby="email-error"
             readOnly={disabled}
