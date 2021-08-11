@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import axios from 'axios';
 import validator from "validator/es";
 import _ from 'lodash';
@@ -10,10 +10,17 @@ export default function Input(props) {
   const [value, setValue] = React.useState('');
   const [error, setError] = React.useState('');
   const autofocus = props.autofocus ? props.autofocus : false;
+  // const clear = props.clear ? props.clear : false;
 
   const handleChange = event => {
     setValue(event.target.value);
   };
+
+  // useEffect((clear) => {
+  //   if(clear) {
+  //     setValue('');
+  //   }
+  // }, [clear])
 
   function isValidCityOrZip(value) {
     if (isZip(value) || isCity(value)) {
@@ -64,6 +71,7 @@ export default function Input(props) {
         if (response.data.cod === 200) {
           const locationData = makeCityObject(response, hasZip ? value : undefined)
           setLocation(_.merge(response.data, locationData, { pollen: undefined }))  // add 'pollen' prop placeholder
+          setValue('');
         } else {
           setError(response.data.message)
         }
