@@ -1,8 +1,7 @@
 import React from 'react';
 import validator from "validator/es";
-import {getByCityState, getByZip} from 'zcs';
+import {zipLookAhead, getByCityState, getByZip, cityLookAhead} from 'zcs';
 import Button from "./Button";
-import {list, data} from './cityZipData';
 
 
 export default function Input(props) {
@@ -25,16 +24,29 @@ export default function Input(props) {
   }
 
   function isZip(value) {
-    let t = data.zips[list.zips.indexOf(value)]
-    console.log('invalid zip. t= ', t)
-    return t !== undefined;
+    if (value.length === 5) {
+      let valid = zipLookAhead(value, 10)
+      if (valid.length > 0) {
+        console.log('true zip')
+        return true
+      }
+    }
+
+    console.log('false zip')
+    return false
   }
 
   function isCity(value) {
     if (validator.isAlpha(value, 'en-US', {ignore: ' '})) {
       const city = value.toUpperCase()
-      let t = data.cities[list.cities.indexOf(city)]
-      return t !== undefined;
+      let valid = cityLookAhead(city)
+      if (valid.length > 0) {
+        const result = valid.indexOf(city)
+        if(result >= 0) {
+          console.log('true city')
+          return true
+        }
+      }
     }
     return false
   }
