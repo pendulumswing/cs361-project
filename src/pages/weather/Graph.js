@@ -1,29 +1,30 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import ReactApexChart from 'react-apexcharts';
+import _ from 'lodash';
 
-function getParamFingerprint (location1, location2) {
+function getParamFingerprint (location1, location2, pollen1, pollen2) {
   const p = {
-    tempf: (location1.main.temp * 1.8 + 32),
-    tempc: location1.main.temp,
-    humidity: location1.main.humidity,
-    pressure: location1.main.pressure,
-    windspeed: location1.wind.speed,
-    winddir: location1.wind.deg,
-    windgust: location1.wind.gust,
-    cloudiness: location1.clouds.all,
-    pollen: location1.pollen,
+    tempf: (location1.main.temp * 1.8 + 32) || 0,
+    tempc: location1.main.temp || 0,
+    humidity: location1.main.humidity || 0,
+    pressure: location1.main.pressure || 0,
+    windspeed: location1.wind.speed || 0,
+    winddir: location1.wind.deg || 0,
+    windgust: location1.wind.gust || 0,
+    cloudiness: location1.clouds.all || 0,
+    pollen: pollen1 || 0,
   }
 
   const r = {
-    tempf: (location2.main.temp * 1.8 + 32),
-    tempc: location2.main.temp,
-    humidity: location2.main.humidity,
-    pressure: location2.main.pressure,
-    windspeed: location2.wind.speed,
-    winddir: location2.wind.deg,
-    windgust: location2.wind.gust,
-    cloudiness: location2.clouds.all,
-    pollen: location2.pollen,
+    tempf: (location2.main.temp * 1.8 + 32) || 0,
+    tempc: location2.main.temp || 0,
+    humidity: location2.main.humidity || 0,
+    pressure: location2.main.pressure || 0,
+    windspeed: location2.wind.speed || 0,
+    winddir: location2.wind.deg || 0,
+    windgust: location2.wind.gust || 0,
+    cloudiness: location2.clouds.all || 0,
+    pollen: pollen2 || 0,
   }
 
   const q = {}
@@ -54,7 +55,11 @@ function getParamFingerprint (location1, location2) {
 }
 
 export default function Graph(props) {
-  const { location1, location2 } = props;
+  const { location1, location2, pollen1, pollen2 } = props;
+
+  useEffect(() => {
+
+  }, [pollen1, pollen2])
 
   const categories = [
     'other',
@@ -68,7 +73,6 @@ export default function Graph(props) {
     'cloudiness',
     'pollen',
   ]
-
 
 
   const options = {
@@ -138,7 +142,7 @@ export default function Graph(props) {
     }
   }
 
-  if (!location1 || !location2) {
+  if (_.isEmpty(location1) || _.isEmpty(location2)) {
     return (
       <div>
 
@@ -146,9 +150,8 @@ export default function Graph(props) {
     )
   }
 
-  const configData = getParamFingerprint(location1, location2)
-
-  const series = [
+  let configData = getParamFingerprint(location1, location2, pollen1, pollen2)
+  let series = [
     {
       name: 'weather',
       data: configData,
