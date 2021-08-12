@@ -1,13 +1,12 @@
-import React, {useEffect} from 'react';
-import axios from 'axios';
+import React from 'react';
 import validator from "validator/es";
-import _ from 'lodash';
-import { getByCityState, getByZip } from 'zcs';
+import {getByCityState, getByZip} from 'zcs';
 import Button from "./Button";
+import {list, data} from './cityZipData';
 
 
 export default function Input(props) {
-  const { name, className, disabled, placeholder, setLocation, setLocationName, onSubmit } = props;
+  const {name, className, disabled, placeholder, onSubmit, location} = props;
   const [value, setValue] = React.useState('');
   const [error, setError] = React.useState('');
   const autofocus = props.autofocus ? props.autofocus : false;
@@ -26,35 +25,23 @@ export default function Input(props) {
   }
 
   function isZip(value) {
-    return validator.isNumeric(value) &&
-      (value.length === 5 || value.length === 9)
+    let t = data.zips[list.zips.indexOf(value)]
+    console.log('invalid zip. t= ', t)
+    return t !== undefined;
   }
 
   function isCity(value) {
-    return validator.isAlpha(value, 'en-US', {ignore: ' '})
+    if (validator.isAlpha(value, 'en-US', {ignore: ' '})) {
+      const city = value.toUpperCase()
+      let t = data.cities[list.cities.indexOf(city)]
+      return t !== undefined;
+    }
+    return false
   }
 
-  function makeCityObject (response, value) {
+  function convertToZip(value) {
     // Use response object to obtain city, state and zip code info
-    let zip, state = undefined;
-    if (value) {
-      const zipData = getByZip(value)
-      state = zipData.state
-      zip = value
-    } else {
-      const cityData = getByCityState(response.data.name)
-      state = Object.keys(cityData)[0];
-      zip = cityData[state][0]
-    }
-    return {
-      state: state,
-      zip: zip
-    }
-  }
-
-  function convertToZip (value) {
-    // Use response object to obtain city, state and zip code info
-    if(!isZip(value)) {
+    if (!validator.isNumeric(value)) {
       const cityData = getByCityState(value);
       const state = Object.keys(cityData)[0];
       return cityData[state][0];
@@ -62,11 +49,14 @@ export default function Input(props) {
     return value;
   }
 
-  function handleSubmit (event) {
+  function handleSubmit(event) {
     event.preventDefault();
     if (value && isValidCityOrZip(value)) {
       const zip = convertToZip(value)
       onSubmit(zip)
+    } else {
+      setValue('')
+      onSubmit('')
     }
   };
 
@@ -74,29 +64,36 @@ export default function Input(props) {
     <div>
       <div className="flex flex-nowrap mt-1 relative justify-center items-center content-center align-middle">
         <form onSubmit={handleSubmit}>
-        {/*<form onSubmit={onSubmit}>*/}
+          {/*<form onSubmit={onSubmit}>*/}
           <input type="text"
-            name={name}
-            id={name}
-            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-            placeholder={placeholder}
-            autoFocus={autofocus}
-            aria-invalid="true"
-            aria-describedby="email-error"
-            readOnly={disabled}
-            value={value}
-            onChange={handleChange}
+                 name={name}
+                 id={name}
+                 className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                 placeholder={placeholder}
+                 autoFocus={autofocus}
+                 aria-invalid="true"
+                 aria-describedby="email-error"
+                 readOnly={disabled}
+                 value={value}
+                 onChange={handleChange}
           />
         </form>
         <Button
           className="ml-3"
           setLocation={() => {
-          setValue('')
-          onSubmit('')
-        }}/>
+            setValue('')
+            onSubmit('')
+          }}/>
       </div>
       <div>
         {
+          // error.length > 0 && (
+          location && location.message && (
+            <p className="mt-2 text-sm text-red-600" id="input-error">{location.message}</p>
+          )
+        }
+        {
+          // error.length > 0 && (
           error.length > 0 && (
             <p className="mt-2 text-sm text-red-600" id="input-error">{error}</p>
           )
