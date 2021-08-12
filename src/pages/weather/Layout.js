@@ -3,29 +3,122 @@ import LocationWeatherData from './LocationWeatherData';
 import Input from './Input';
 import Graph from './Graph';
 import Button from './Button';
-import Pollen from './Pollen';
+import validator from "validator/es";
 import axios from "axios";
 import _ from "lodash";
+import {getByCityState, getByZip} from "zcs";
+
+function isValidCityOrZip(value) {
+  if (isZip(value) || isCity(value)) {
+    return true
+  }
+  return false
+}
+
+function isZip(value) {
+  return validator.isNumeric(value) &&
+    (value.length === 5 || value.length === 9)
+}
+
+function isCity(value) {
+  return validator.isAlpha(value, 'en-US', {ignore: ' '})
+}
+
+function makeCityObject (response, value) {
+  // Use response object to obtain city, state and zip code info
+  let zip, state = undefined;
+  if (value) {
+    const zipData = getByZip(value)
+    state = zipData.state
+    zip = value
+  } else {
+    const cityData = getByCityState(response.data.name)
+    state = Object.keys(cityData)[0];
+    zip = cityData[state][0]
+  }
+  return {
+    state: state,
+    zip: zip
+  }
+}
 
 function Layout(props) {
   const [location1, setLocation1] = useState(undefined);
   const [location2, setLocation2] = useState(undefined);
+  const [locationName1, setLocationName1] = useState('');
 
-  useEffect(() => {
-    if(location1 !== undefined) {
-      printData(location1)
-    }
-  }, [location1])
+  const [weather, setWeather] = useState({});
+  const [pollen, setPollen] = useState({});
 
-  function printData(data) {
-    const { name, main, weather, wind, state, zip, pollen } = data;
-    console.log(`Weather data for ${name}:`)
-    console.log(`  main: `, main);
-    console.log(`  weather: `, weather);
-    console.log(`  wind: `, wind);
-    console.log(`  state, zip: ${state}, ${zip}`);
-    console.log(`  pollen: `, pollen);
+  // useEffect(() => {
+  //   if(location1 !== undefined) {
+  //     printData(location1)
+  //   }
+  // }, [location1])
+  //
+  // function printData(data) {
+  //   const { name, main, weather, wind, state, zip, pollen } = data;
+  //   console.log(`Weather data for ${name}:`)
+  //   console.log(`  main: `, main);
+  //   console.log(`  weather: `, weather);
+  //   console.log(`  wind: `, wind);
+  //   console.log(`  state, zip: ${state}, ${zip}`);
+  //   console.log(`  pollen: `, pollen);
+  // }
+
+  function onGetWeatherData(value) {
+    // setLocation(undefined)
+    // const hasZip = validator.isNumeric(value)
+
+      axios.post('/api/weather', {
+        value: value,
+        // zip: value,
+      }).then(function (response) {
+        if (response.data.cod === 200) {
+          // const locationData = makeCityObject(response, value)
+
+          setWeather({
+            ...weather,
+            [value]: {
+              ...response.data,
+              // ...locationData,
+              // pollen: undefined // add 'pollen' prop placeholder
+            }
+          })
+        } else {
+          console.error(response.data.message)
+        }
+      }),
+
+      axios.post(`/api/pollen?zip=${value}`)
+        .then(function (response) {
+          setPollen({
+            ...pollen,
+            [value]:  response.data
+          })
+        }).catch(function (thrown) {
+          console.log('Request canceled', thrown.message);
+      });
+
+
+      // if (!weather[value]) {
+      //   setWeather({
+      //     ...weather,
+      //     [value]: {}
+      //   })
+      // }
+      //
+      // if (!pollen[value]) {
+      //   setPollen({
+      //     ...weather,
+      //     [value]: {}
+      //   })
+      // }
   }
+  //
+  // console.log(data);
+  //
+  // console.log(location1);
 
   return (
     <div className="p-4 px-6">
@@ -61,12 +154,16 @@ function Layout(props) {
           </div>
           <div className="flex flex-nowrap">
             <Input
+              // key={location1}
               name="location1"
-              setLocation={setLocation1}
+              // setLocation={setLocation1}
+              onSubmit={function(value) {
+                setLocation1(value)
+                value && onGetWeatherData(value)
+              }}
               placeholder={'city or zip code'}
               autofocus={true}
             />
-            <Button setLocation={setLocation1}/>
           </div>
         </div>
 
@@ -84,12 +181,14 @@ function Layout(props) {
           </div>
           <div className="flex flex-nowrap">
             <Input
-              key={location2}
+              // key={location2}
               name="location2"
-              setLocation={setLocation2}
+              onSubmit={function(value) {
+                setLocation2(value)
+                value && onGetWeatherData(value)
+              }}
               placeholder={'city or zip code'}
             />
-            <Button setLocation={setLocation2}/>
           </div>
         </div>
 
@@ -124,18 +223,20 @@ function Layout(props) {
         {/*Location 1*/}
         <div className="w-1/4 px-4">
           <LocationWeatherData
-            key={location1}
-            location={location1}
-            setLocation={setLocation1}
+            // key={location1 ? location1.name : 'location1'}
+            location={location1 ? weather[location1] : {}}
+            pollen={location1 ? pollen[location1] : {}}
+            // location={data[locationName1]}
+            // setLocation={setLocation1}
           />
         </div>
 
         {/*Location 2*/}
         <div className="w-1/4 px-4">
           <LocationWeatherData
-            key={location2}
-            location={location2}
-            setLocation={setLocation2}
+            // key={location2 ? location2.name : 'location2'}
+            location={location2 ? weather[location2] : {}}
+            pollen={location2 ? pollen[location2] : {}}
           />
         </div>
 
@@ -145,10 +246,10 @@ function Layout(props) {
             {
               location2 && location1 && (
                 <Graph
-                  key={location1 && location2}
+                  // key={location1 && location2}
                   className="h-full"
-                  location1={location1}
-                  location2={location2}
+                  location1={location1 ? weather[location1] : {}}
+                  location2={location2 ? weather[location2] : {}}
                 />
               ) || ''
             }

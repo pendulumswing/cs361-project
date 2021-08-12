@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Pollen from './Pollen';
 
 function LocationWeatherData(props) {
-  const { location, setLocation } = props
+  const { location, pollen } = props
 
   if (location === undefined ||
       location.main === undefined ||
@@ -26,9 +26,10 @@ function LocationWeatherData(props) {
           <p>{location.main.pressure ? `${location.main.pressure.toFixed(0)}hPa` : ' '}</p>
           <p>{location.wind.speed ? `${location.wind.speed.toFixed(2)}m/s` : ' '}</p>
           <p>{location.wind.deg ? `${location.wind.deg.toFixed(0)}º` : ' '}</p>
-          <p className="">{location.wind.gust ? `${location.wind.gust.toFixed(2)}m/s` : ' '}</p>
+          <p>{location.wind.gust ? `${location.wind.gust.toFixed(2)}m/s` : ' '}</p>
           <p>{location.clouds.all ? `${location.clouds.all.toFixed(0)}%` : ' '}</p>
-          <Pollen key={location} location={location} setLocation={setLocation}/>
+          <Pollen pollen={pollen} />
+          {/*<p>{location.clouds.all ? `${location.clouds.all.toFixed(0)}%` : ' '}</p>*/}
         </div>
       </div>
     </div>

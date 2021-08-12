@@ -12,12 +12,13 @@ class Weather(Resource):
         OPENWEATHER_KEY = os.getenv('REACT_APP_OPENWEATHER_KEY')
         req = request.json
         value = req['value']
-        zip = req['zip']
-        query_type = 'q'
-        if req['zip']:
-            query_type = 'zip'
-        print(f'value: {value}')
+#         zip = req['zip']
+#         query_type = 'q'
+#         if req['zip']:
+#             query_type = 'zip'
+#         print(f'value: {value}')
         url = f"http://api.openweathermap.org/data/2.5/weather?"\
-              f"{query_type}={value}&appid={OPENWEATHER_KEY}&units=metric"
+                f"zip={value}&appid={OPENWEATHER_KEY}&units=metric"
+#               f"{query_type}={value}&appid={OPENWEATHER_KEY}&units=metric"
         response = requests.get(url)
         return response.json()

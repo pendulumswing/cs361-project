@@ -69,14 +69,7 @@ export default function Graph(props) {
     'pollen',
   ]
 
-  const configData = getParamFingerprint(location1, location2)
 
-  const series = [
-    {
-      name: 'weather',
-      data: configData,
-    },
-  ]
 
   const options = {
     chart: {
@@ -144,6 +137,23 @@ export default function Graph(props) {
       }
     }
   }
+
+  if (!location1 || !location2) {
+    return (
+      <div>
+
+      </div>
+    )
+  }
+
+  const configData = getParamFingerprint(location1, location2)
+
+  const series = [
+    {
+      name: 'weather',
+      data: configData,
+    },
+  ]
 
   return (
     <div className="h-full w-full">

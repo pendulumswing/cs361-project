@@ -3,24 +3,18 @@ import axios from 'axios';
 import validator from "validator/es";
 import _ from 'lodash';
 import { getByCityState, getByZip } from 'zcs';
+import Button from "./Button";
 
 
 export default function Input(props) {
-  const { name, className, disabled, placeholder, setLocation } = props;
+  const { name, className, disabled, placeholder, setLocation, setLocationName, onSubmit } = props;
   const [value, setValue] = React.useState('');
   const [error, setError] = React.useState('');
   const autofocus = props.autofocus ? props.autofocus : false;
-  // const clear = props.clear ? props.clear : false;
 
   const handleChange = event => {
     setValue(event.target.value);
   };
-
-  // useEffect((clear) => {
-  //   if(clear) {
-  //     setValue('');
-  //   }
-  // }, [clear])
 
   function isValidCityOrZip(value) {
     if (isZip(value) || isCity(value)) {
@@ -58,31 +52,29 @@ export default function Input(props) {
     }
   }
 
+  function convertToZip (value) {
+    // Use response object to obtain city, state and zip code info
+    if(!isZip(value)) {
+      const cityData = getByCityState(value);
+      const state = Object.keys(cityData)[0];
+      return cityData[state][0];
+    }
+    return value;
+  }
+
   function handleSubmit (event) {
     event.preventDefault();
     if (value && isValidCityOrZip(value)) {
-      setLocation(undefined)
-      const hasZip = validator.isNumeric(value)
-      axios.post('/api/weather', {
-        value: value,
-        zip: hasZip,
-      })
-        .then(function (response) {
-        if (response.data.cod === 200) {
-          const locationData = makeCityObject(response, hasZip ? value : undefined)
-          setLocation(_.merge(response.data, locationData, { pollen: undefined }))  // add 'pollen' prop placeholder
-          setValue('');
-        } else {
-          setError(response.data.message)
-        }
-      })
+      const zip = convertToZip(value)
+      onSubmit(zip)
     }
   };
 
   return (
     <div>
-      <div className="mt-1 relative rounded-md shadow-sm">
+      <div className="flex flex-nowrap mt-1 relative justify-center items-center content-center align-middle">
         <form onSubmit={handleSubmit}>
+        {/*<form onSubmit={onSubmit}>*/}
           <input type="text"
             name={name}
             id={name}
@@ -96,6 +88,12 @@ export default function Input(props) {
             onChange={handleChange}
           />
         </form>
+        <Button
+          className="ml-3"
+          setLocation={() => {
+          setValue('')
+          onSubmit('')
+        }}/>
       </div>
       <div>
         {
