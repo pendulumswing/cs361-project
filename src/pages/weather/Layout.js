@@ -2,45 +2,9 @@ import React, { useState, useEffect } from 'react';
 import LocationWeatherData from './LocationWeatherData';
 import Input from './Input';
 import Graph from './Graph';
-import Button from './Button';
-import validator from "validator/es";
 import axios from "axios";
-import _ from "lodash";
-import {getByCityState, getByZip} from "zcs";
+import LocationLabel from "./LocationLabel";
 
-function isValidCityOrZip(value) {
-  if (isZip(value) || isCity(value)) {
-    return true
-  }
-  return false
-}
-
-function isZip(value) {
-  return validator.isNumeric(value) &&
-    (value.length === 5 || value.length === 9)
-}
-
-function isCity(value) {
-  return validator.isAlpha(value, 'en-US', {ignore: ' '})
-}
-
-function makeCityObject (response, value) {
-  // Use response object to obtain city, state and zip code info
-  let zip, state = undefined;
-  if (value) {
-    const zipData = getByZip(value)
-    state = zipData.state
-    zip = value
-  } else {
-    const cityData = getByCityState(response.data.name)
-    state = Object.keys(cityData)[0];
-    zip = cityData[state][0]
-  }
-  return {
-    state: state,
-    zip: zip
-  }
-}
 
 function Layout(props) {
   const [location1, setLocation1] = useState(undefined);
@@ -50,75 +14,50 @@ function Layout(props) {
   const [weather, setWeather] = useState({});
   const [pollen, setPollen] = useState({});
 
-  // useEffect(() => {
-  //   if(location1 !== undefined) {
-  //     printData(location1)
-  //   }
-  // }, [location1])
-  //
-  // function printData(data) {
-  //   const { name, main, weather, wind, state, zip, pollen } = data;
-  //   console.log(`Weather data for ${name}:`)
-  //   console.log(`  main: `, main);
-  //   console.log(`  weather: `, weather);
-  //   console.log(`  wind: `, wind);
-  //   console.log(`  state, zip: ${state}, ${zip}`);
-  //   console.log(`  pollen: `, pollen);
-  // }
+  useEffect(() => {
+    if(weather) {
+      console.log('weather: ', weather)
+      if(location1) {
+        console.log('location1: ', weather[location1])
+      }
+      if(location2) {
+        console.log('location2: ', weather[location2])
+      }
+    }
+  }, [weather[location1], weather[location2]])
 
   function onGetWeatherData(value) {
-    // setLocation(undefined)
-    // const hasZip = validator.isNumeric(value)
+    axios.post('/api/weather', {
+      value: value,
+    }).then(function (response) {
+      if (response.data.cod === 200) {
+        setWeather({
+          ...weather,
+          [value]: {
+            ...response.data,
+          }
+        })
+      } else {
+        setWeather({
+          ...weather,
+          [value]: {
+            ...response.data.message,
+          }
+        })
+        console.error(response.data.message)
+      }
+    })
 
-      axios.post('/api/weather', {
-        value: value,
-        // zip: value,
-      }).then(function (response) {
-        if (response.data.cod === 200) {
-          // const locationData = makeCityObject(response, value)
-
-          setWeather({
-            ...weather,
-            [value]: {
-              ...response.data,
-              // ...locationData,
-              // pollen: undefined // add 'pollen' prop placeholder
-            }
-          })
-        } else {
-          console.error(response.data.message)
-        }
-      }),
-
-      axios.post(`/api/pollen?zip=${value}`)
-        .then(function (response) {
-          setPollen({
-            ...pollen,
-            [value]:  response.data
-          })
-        }).catch(function (thrown) {
-          console.log('Request canceled', thrown.message);
-      });
-
-
-      // if (!weather[value]) {
-      //   setWeather({
-      //     ...weather,
-      //     [value]: {}
-      //   })
-      // }
-      //
-      // if (!pollen[value]) {
-      //   setPollen({
-      //     ...weather,
-      //     [value]: {}
-      //   })
-      // }
+    axios.post(`/api/pollen?zip=${value}`)
+      .then(function (response) {
+        setPollen({
+          ...pollen,
+          [value]:  response.data
+        })
+      }).catch(function (thrown) {
+        console.log('Request canceled', thrown.message);
+    });
   }
-  //
-  // console.log(data);
-  //
-  // console.log(location1);
 
   return (
     <div className="p-4 px-6">
@@ -142,21 +81,18 @@ function Layout(props) {
 
         {/*Location 1 Header*/}
         <div className="w-1/4 text-left px-4">
-          <div className="text-2xl font-semibold text-gray-500">
-            {
-              location1 && location1.name && (
-                <div>{location1.name}, {location1.state}</div>
-              ) || 'Location 1'
-            }
-          </div>
+          <LocationLabel
+            className="text-2xl font-semibold text-gray-500"
+            zip={location1 ? location1 : undefined}
+            location={location1 ? weather[location1] : {}}
+            altName={`Location 1`}
+          />
           <div className="text-gray-400">
             (e.g. where are you at?)
           </div>
           <div className="flex flex-nowrap">
             <Input
-              // key={location1}
               name="location1"
-              // setLocation={setLocation1}
               onSubmit={function(value) {
                 setLocation1(value)
                 value && onGetWeatherData(value)
@@ -165,29 +101,29 @@ function Layout(props) {
               autofocus={true}
             />
           </div>
+
         </div>
 
         {/*Location 2 Header*/}
         <div className="w-1/4 text-left px-4">
-          <div className="text-2xl font-semibold text-gray-500">
-            {
-              location2 && location2.name && (
-                <div>{location2.name}, {location2.state}</div>
-              ) || 'Location 2'
-            }
-          </div>
+          <LocationLabel
+            className="text-2xl font-semibold text-gray-500"
+            zip={location2 ? location2 : undefined}
+            location={location2 ? weather[location2] : {}}
+            altName={`Location 2`}
+          />
           <div className="text-gray-400">
             (e.g. where are you going?)
           </div>
           <div className="flex flex-nowrap">
             <Input
-              // key={location2}
               name="location2"
               onSubmit={function(value) {
                 setLocation2(value)
                 value && onGetWeatherData(value)
               }}
               placeholder={'city or zip code'}
+              location={location2 ? weather[location2] : {}}
             />
           </div>
         </div>
@@ -223,18 +159,14 @@ function Layout(props) {
         {/*Location 1*/}
         <div className="w-1/4 px-4">
           <LocationWeatherData
-            // key={location1 ? location1.name : 'location1'}
             location={location1 ? weather[location1] : {}}
             pollen={location1 ? pollen[location1] : {}}
-            // location={data[locationName1]}
-            // setLocation={setLocation1}
           />
         </div>
 
         {/*Location 2*/}
         <div className="w-1/4 px-4">
           <LocationWeatherData
-            // key={location2 ? location2.name : 'location2'}
             location={location2 ? weather[location2] : {}}
             pollen={location2 ? pollen[location2] : {}}
           />
@@ -246,32 +178,14 @@ function Layout(props) {
             {
               location2 && location1 && (
                 <Graph
-                  // key={location1 && location2}
-                  className="h-full"
                   location1={location1 ? weather[location1] : {}}
                   location2={location2 ? weather[location2] : {}}
+                  pollen1={pollen ? pollen[location1] : {}}
+                  pollen2={pollen ? pollen[location2] : {}}
                 />
               ) || ''
             }
           </div>
-
-          {/*<div className="pb-4">*/}
-          {/*  <p className="text-blue-300 font-semibold text-xl">Microservice</p>*/}
-          {/*  <p>Provide the current stock price for a given symbol.</p>*/}
-          {/*  <p className="">*/}
-          {/*    <span className="font-semibold">Example: </span>*/}
-          {/*    <span className=""> NFLX is </span>*/}
-          {/*    <span className="font-semibold">${currentPrice}</span>*/}
-          {/*  </p>*/}
-          {/*</div>*/}
-
-          {/*<div>*/}
-          {/*  <p className="text-blue-300 font-semibold text-xl">Environment Variable</p>*/}
-          {/*  <p>*/}
-          {/*    OpenWeatherKey (partial):*/}
-          {/*    <span className="font-semibold">{process.env.REACT_APP_OPENWEATHER_KEY.slice(-10)}</span>*/}
-          {/*  </p>*/}
-          {/*</div>*/}
         </div>
 
       </div>
@@ -280,7 +194,3 @@ function Layout(props) {
 }
 
 export default Layout;
-
-function logData() {
-
-};
