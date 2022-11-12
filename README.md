@@ -21,3 +21,6 @@ Uses React, Tailwind CSS, and Flask. Hosted on Heroku.
 ![](img/app-new-york-san-francisco.png)
 ![](img/app-miami-beverly-hills.png)
 ![](img/app-validator.png)
+
+**Microservice** - “NFLX” stock price fetched and provided at /api/stocks/NFLX
+![](img/app-stock-microservice.png)
