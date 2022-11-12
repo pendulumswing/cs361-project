@@ -6,8 +6,6 @@ colored graph will provide a visual comparison of the data.
 
 ![](img/app-tucson-portland.png)
 
-Project created for CS 361 - Software Engineering I
-
 ### Website
 https://cs361-weather-app.herokuapp.com
 
