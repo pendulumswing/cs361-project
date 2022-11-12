@@ -20,7 +20,8 @@ class Stock(Resource):
         soup = BeautifulSoup(page.content, "html.parser")
 
         # find element with the given classes (based on page inspection)
-        price = soup.find("span", class_="Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(ib)")
+        # Modification to work with finance.yahoo.com site as of 11/12/22
+        price = soup.find("fin-streamer", class_="Fw(b) Fz(36px) Mb(-4px) D(ib)")
 
         # return text within tag
         return price.text, 200
