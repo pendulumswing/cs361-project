@@ -7,7 +7,7 @@ Enter two U.S. locations (zip or city) to retrieve weather data from two sources
 ![](img/app-tucson-portland.png)
 
 ### Website
-https://cs361-weather-app.herokuapp.com
+https://cs361-weather-app.herokuapp.com **(Not active currently)**
 
 ### Microservice
 Also provides a stock price API endpoint as a microservice. 
